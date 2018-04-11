@@ -1,2 +1,3 @@
 Web-client/node_modules/
+./Backend/src/main/resources/META-INF/persistence.xml
 Backend/src/main/resources/META-INF/persistence.xml
