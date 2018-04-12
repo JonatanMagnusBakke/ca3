@@ -1,21 +1,88 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import {
+    Route,
+    HashRouter,
+    Switch
+} from 'react-router-dom'
+import { Button, Form, FormGroup, Label, Input, Nav, NavItem, NavLink, Row, Col, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+        <HashRouter>
+              <div>
+                  {Menu()}
+                  <Switch>
+                      <Route exact path="/" render={() => <Home />} />
+                      <Route path="/login" render={() => <Login />} />
+                      <Route component={NoMatch}/>
+                  </Switch>
+              </div>
+        </HashRouter>
     );
   }
 }
+
+const Login = () =>
+    (
+        <Row>
+            <Col sm="12" md={{ size: 4, offset: 4 }}>
+                <Form inline>
+                    <FormGroup>
+                        <Label for="username" hidden>Email</Label>
+                        <Input type="username" name="username" id="username" placeholder="Username" />
+                    </FormGroup>
+                    <FormGroup>
+                        <Label for="password" hidden>Password</Label>
+                        <Input type="password" name="password" id="password" placeholder="Password" />
+                    </FormGroup>
+                    <Button>Submit</Button>
+                </Form>
+            </Col>
+        </Row>
+    )
+
+const Home = () =>
+    (
+        <div id="home">
+            <h1>Home</h1>
+        </div>
+    )
+
+/*const Logout = () =>
+{
+    //destroy token
+}*/
+
+const NoMatch = () =>
+    (
+        <h1>No match</h1>
+    )
+
+const Menu = () =>
+    (
+        <Row>
+            <Col xs="10">
+                <Nav tabs>
+                    <NavItem>
+                        <NavLink href="#/" to="/" >Home</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink href="#login">Login</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink href="#logout">Logout</NavLink>
+                    </NavItem>
+                </Nav>
+            </Col>
+            <Col xs="2">
+                <Breadcrumb>
+                    <BreadcrumbItem active>Username...</BreadcrumbItem>
+                </Breadcrumb>
+            </Col>
+        </Row>
+    )
 
 export default App;
