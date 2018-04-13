@@ -17,6 +17,8 @@ class App extends Component {
                   <Switch>
                       <Route exact path="/" render={() => <Home />} />
                       <Route path="/login" render={() => <Login />} />
+                      <Route path="/user" render={() => <UserEndpoint />} />
+                      <Route path="/Swapi" render={() => <Swapi />} />
                       <Route component={NoMatch}/>
                   </Switch>
               </div>
@@ -56,10 +58,22 @@ const Home = () =>
     //destroy token
 }*/
 
+const UserEndpoint = () =>
+    (
+        <h1>user endpoint stuff</h1>
+    )
+
+const Swapi = () =>
+    (
+        <h1>fetched stuff</h1>
+    )
+
 const NoMatch = () =>
     (
         <h1>No match</h1>
     )
+
+export default App;
 
 const Menu = () =>
     (
@@ -73,6 +87,12 @@ const Menu = () =>
                         <NavLink href="#login">Login</NavLink>
                     </NavItem>
                     <NavItem>
+                        <NavLink href="#user">User Endpoint</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink href="#swapi">Swapi Endpoint</NavLink>
+                    </NavItem>
+                    <NavItem>
                         <NavLink href="#logout">Logout</NavLink>
                     </NavItem>
                 </Nav>
@@ -84,5 +104,3 @@ const Menu = () =>
             </Col>
         </Row>
     )
-
-export default App;
