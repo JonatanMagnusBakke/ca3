@@ -5,26 +5,27 @@ import {
     HashRouter,
     Switch
 } from 'react-router-dom'
-import { Button, Form, FormGroup, Label, Input, Nav, NavItem, NavLink, Row, Col, Breadcrumb, BreadcrumbItem} from 'reactstrap';
+import facade from "./Facade";
+import { Button, Form, FormGroup, Label, Input, Nav, NavItem, NavLink, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap';
 
 
 class App extends Component {
-  render() {
-    return (
-        <HashRouter>
-              <div>
-                  {Menu()}
-                  <Switch>
-                      <Route exact path="/" render={() => <Home />} />
-                      <Route path="/login" render={() => <Login />} />
-                      <Route path="/user" render={() => <UserEndpoint />} />
-                      <Route path="/Swapi" render={() => <Swapi />} />
-                      <Route component={NoMatch}/>
-                  </Switch>
-              </div>
-        </HashRouter>
-    );
-  }
+    render() {
+        return (
+            <HashRouter>
+                <div>
+                    {Menu()}
+                    <Switch>
+                        <Route exact path="/" render={() => <Home />} />
+                        <Route path="/login" render={() => <Login />} />
+                        <Route path="/user" render={() => <UserEndpoint />} />
+                        <Route path="/Swapi" render={() => <Swapi />} />
+                        <Route component={NoMatch} />
+                    </Switch>
+                </div>
+            </HashRouter>
+        );
+    }
 }
 
 const Login = () =>
@@ -63,10 +64,62 @@ const UserEndpoint = () =>
         <h1>user endpoint stuff</h1>
     )
 
-const Swapi = () =>
-    (
-        <h1>fetched stuff</h1>
-    )
+class FetchSwapi extends Component {
+    constructor(props) {
+        super(props);
+
+        var person = facade.fetchPerson;
+        console.log(person);
+
+        /*var person = fetch("https://swapi.co/api/people/1/")
+            .then(response => response.json())
+            .then(data => {
+                const person = data;
+                console.log(person);
+            })
+        this.state = { pers: person };*/
+    }
+
+    componentDidMount() {
+        facade.fetchPerson().then(res => this.setState({ pers: res }));
+    }
+
+    render() {
+        return (
+            <div> name: </div>
+        )
+    }
+}
+class Swapi extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = { name: '' };
+        this._getRandomName = this.getRandomName.bind(this);
+    }
+
+    render() {
+        const { name } = this.state;
+        return (
+            <div>
+                <h1>{name}</h1>
+                <button
+                    onClick={this._getRandomName}
+                >
+                    PRESS ME!
+          </button>
+            </div>
+        );
+    }
+
+    getRandomName() {
+        fetch("https://swapi.co/api/people/1/")
+            .then(response => response.json())
+            .then(data => {
+                const person = data;
+                this.setState({ name: `${person.name}` })
+            })
+    }
+}
 
 const NoMatch = () =>
     (
