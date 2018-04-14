@@ -1,7 +1,8 @@
 import React from 'react';
-import { Text, View, Platform, TouchableOpacity, StyleSheet, Button, WebView } from 'react-native';
+import { Text, View, Platform, TouchableOpacity, StyleSheet, Button, WebView, FlatList, TextInput } from 'react-native';
 import { Constants, WebBrowser } from "expo";
 import { StackNavigator } from 'react-navigation';
+
 
 class Login extends React.Component {
   static navigationOptions = { title: "Login" }
@@ -18,24 +19,58 @@ class Logout extends React.Component {
 }
 
 class Swappi extends React.Component {
+  state = {
+    data: []
+  }
+
+  componentWillMount() {
+    this.fetchData();
+  }
+
+  fetchData = async () => {
+    const response = await fetch("http://swapi.co/api/people");
+    const json = await response.json();
+    this.setState({ data: json.results });
+  }
+
   static navigationOptions = { title: "Swappi" }
   render() {
     return (
       <View>
-        <Text>This will be the Swappi</Text>
+        <FlatList
+          data={this.state.data}
+          keyExtractor={(x, i) => i}
+          renderItem={({ item }) => <Text>{item.name}</Text>}
+        />
       </View>
     )
   }
 }
 
 class AdminSwappi extends React.Component {
-  static navigationOptions = { title: "AdminSwappi" }
+  state = {
+    data: {}
+  }
+
+  componentWillMount() {
+    this.fetchData("1");
+  }
+
+  fetchData = async (personId) => {
+    const response = await fetch("http://swapi.co/api/people/" + personId);
+    const json = await response.json();
+    this.setState({ data: json });
+  }
+
+  static navigationOptions = { title: "SwappiAdmin" }
   render() {
     return (
-      <View style={{ flex: 1 }}>
-        <Text>This will be the AdminSwappi</Text>
+      
+      <View>
+        <TextInput placeholder="Type number from 1 -8" onChangeText={(text) => this.fetchData(text)}/>
+        <Text>{this.state.data.name}</Text>
       </View>
-    );
+    )
   }
 }
 
@@ -62,7 +97,16 @@ class HomeScreen extends React.Component {
   }
 }
 
-export default App = () => <RouteStack style={{ marginTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight / 2 }} />
+//export default App = () => <RouteStack style={{ marginTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight / 2 }} />
+
+export default class App extends React.Component {
+
+  render() {
+    return (
+      <RouteStack style={{ marginTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight / 2 }} />
+    );
+  }
+}
 
 const RouteStack = StackNavigator({
   Home: { screen: HomeScreen },
