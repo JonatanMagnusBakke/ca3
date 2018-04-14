@@ -11,9 +11,17 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import exceptions.AuthenticationException;
+import io.jsonwebtoken.JwtBuilder;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.impl.crypto.MacProvider;
+import java.io.UnsupportedEncodingException;
+import java.security.Key;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.spec.SecretKeySpec;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.Consumes;
@@ -25,6 +33,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 
 /**
  * REST Web Service
@@ -67,8 +76,45 @@ public class LoginEndpointResource
         throw new AuthenticationException("Invalid username or password! Please try again");
     }
     
-    private String createToken(String userName, List<String> roles) //throws JOSEException 
-    {           
-           return  "In this exercise you must create a valid token, for Authenticated users";
+    @Path("/test")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public String test() throws AuthenticationException, UnsupportedEncodingException
+    {
+        User user = Facade.getInstance().getVeryfiedUser("EZL", "Kode1234");
+        return new Gson().toJson(user);
+        /*User user = Facade.getInstance().getVeryfiedUser("EZL", "Kode1234");
+        String token = createToken("EZL", user.getRolesAsStrings());
+        return token;*/
+    }
+    
+    private String createToken(String userName, List<String> roles) throws UnsupportedEncodingException //throws JOSEException 
+    {   
+        /*//The JWT signature algorithm we will be using to sign the token
+        SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
+        
+        long nowMillis = System.currentTimeMillis();
+        Date now = new Date(nowMillis);
+        
+        //We will sign our JWT with our ApiKey secret
+            
+        byte[] apiKeySecretBytes = DatatypeConverter.parseBase64Binary("secret");
+        Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
+
+        //Let's set the JWT Claims
+        JwtBuilder builder = Jwts.builder().setId("1")
+                                    .setIssuedAt(now)
+                                    .setSubject("stuff")
+                                    .setIssuer("me")
+                                    .signWith(signatureAlgorithm, signingKey);
+        if (TOKEN_EXPIRE_TIME >= 0) {
+        long expMillis = nowMillis + TOKEN_EXPIRE_TIME;
+        Date exp = new Date(expMillis);
+        builder.setExpiration(exp);
+    }
+
+        //Builds the JWT and serializes it to a compact, URL-safe string
+        return builder.compact();*/
+        return "token";
     }
 }
