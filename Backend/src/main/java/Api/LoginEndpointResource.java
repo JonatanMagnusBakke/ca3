@@ -5,12 +5,13 @@
  */
 package Api;
 
-import Entities.Facade;
-import Entities.User;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import Entities.User;
+import Entities.UserFacade;
 import exceptions.AuthenticationException;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -47,21 +48,21 @@ public class LoginEndpointResource
     public LoginEndpointResource()
     {
     }
-
-    /**
-     * Retrieves representation of an instance of Api.LoginEndpointResource
-     * @return an instance of java.lang.String
-     */
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(String jsonString) throws AuthenticationException
-    {
-        JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
+    public Response login(String jsonString) throws AuthenticationException {
+
+        /*JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
         String username = json.get("username").getAsString();
-        String password = json.get("password").getAsString();
+        String password = json.get("password").getAsString();*/
+        String username = "EZL";
+        String password = "Kode1234";
+
+        //Todo refactor into facade
         try {
-            User user = Facade.getInstance().getVeryfiedUser(username, password);
+            User user = UserFacade.getInstance().getVeryfiedUser(username, password);
             String token = createToken(username, user.getRolesAsStrings());
             JsonObject responseJson = new JsonObject();
             responseJson.addProperty("username", username);
@@ -72,25 +73,30 @@ public class LoginEndpointResource
             if(ex instanceof AuthenticationException){
                 throw (AuthenticationException)ex;
             }
+            //Logger.getLogger(GenericExceptionMapper.class.getName()).log(Level.SEVERE, null, ex);
         }
         throw new AuthenticationException("Invalid username or password! Please try again");
     }
     
-    @Path("/test")
-    @GET
+    @Path("/ttt")
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String test() throws AuthenticationException, UnsupportedEncodingException
+    public String kkk(String jsonString)
     {
-        User user = Facade.getInstance().getVeryfiedUser("EZL", "Kode1234");
-        return new Gson().toJson(user);
-        /*User user = Facade.getInstance().getVeryfiedUser("EZL", "Kode1234");
-        String token = createToken("EZL", user.getRolesAsStrings());
-        return token;*/
+        JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
+        String jwt = json.get("jwt").getAsString();
+        
+        Claims claims = Jwts.parser()         
+       .setSigningKey(DatatypeConverter.parseBase64Binary("secret"))
+       .parseClaimsJws(jwt).getBody();
+        
+        return "Expiration: " + claims.getExpiration();
     }
     
     private String createToken(String userName, List<String> roles) throws UnsupportedEncodingException //throws JOSEException 
     {   
-        /*//The JWT signature algorithm we will be using to sign the token
+        //The JWT signature algorithm we will be using to sign the token
         SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
         
         long nowMillis = System.currentTimeMillis();
@@ -102,10 +108,10 @@ public class LoginEndpointResource
         Key signingKey = new SecretKeySpec(apiKeySecretBytes, signatureAlgorithm.getJcaName());
 
         //Let's set the JWT Claims
-        JwtBuilder builder = Jwts.builder().setId("1")
+        JwtBuilder builder = Jwts.builder().setId(userName)
                                     .setIssuedAt(now)
-                                    .setSubject("stuff")
-                                    .setIssuer("me")
+                                    .setSubject("REACT")
+                                    .setIssuer("EMJ")
                                     .signWith(signatureAlgorithm, signingKey);
         if (TOKEN_EXPIRE_TIME >= 0) {
         long expMillis = nowMillis + TOKEN_EXPIRE_TIME;
@@ -114,7 +120,6 @@ public class LoginEndpointResource
     }
 
         //Builds the JWT and serializes it to a compact, URL-safe string
-        return builder.compact();*/
-        return "token";
+        return builder.compact();
     }
 }
