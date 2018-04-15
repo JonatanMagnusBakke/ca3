@@ -3,4 +3,3 @@ Web-client/node_modules/
 Backend/src/main/resources/META-INF/persistence.xml
 Web-client/package-lock.json
 Web-client/package.json
-/Backend/target/
